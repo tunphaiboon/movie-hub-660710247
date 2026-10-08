@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 // TODO ขั้นที่ 2: import { useNavigate } from 'react-router-dom' และ import { useAuth } from '../auth/AuthContext'
-
+import { useAuth } from '../auth/AuthContext';
+import { useNavigates } from 'react-router-dom';
 function Login() {
   const [email, setEmail] = useState('demo@moviehub.test');   // บัญชีทดลองของ mock
   const [password, setPassword] = useState('1234');
@@ -11,16 +12,18 @@ function Login() {
   const location = useLocation();
   const from = location.state?.from || '/';                   // ProtectedRoute ส่งมาบอกว่าเดิมจะไปไหน
 
-  async function handleSubmit(e) {
+   async function handleSubmit(e) {
     e.preventDefault();
-    // TODO ขั้นที่ 2: แทน 2 บรรทัดด้านล่างด้วยของจริง
-    //   setStatus('submitting') และล้าง error
-    //   try { await login(email, password); navigate(from); }
-    //   catch (err) { setError(err.message); setStatus('typing'); }
-    setStatus('typing');
-    setError(`ยังไม่ได้ต่อ API เข้าสู่ระบบ (ขั้นที่ 2) สำเร็จแล้วต้องพาไปที่ ${from}`);
+    setStatus('submitting');
+    setError(null);
+    try {
+      await login(email, password);                // POST /api/auth/login + จำ token
+      navigate(from);                              // กลับไปหน้าที่ตั้งใจจะไปตอนแรก
+    } catch (err) {
+      setError(err.message);                       // ข้อความ 401 จาก server
+      setStatus('typing');
+    }
   }
-
   return (
     <div className="mx-auto max-w-sm px-4 py-12">
       <h1 className="text-2xl font-semibold text-slate-900">เข้าสู่ระบบ</h1>

@@ -9,6 +9,7 @@ import { useAuth } from '../auth/AuthContext';
 import { getMovie } from '../api/backend';
 import { getReviews } from '../api/backend';
 function MovieDetail() {
+  const {}
   const { id } = useParams();                       // ได้เป็น string เสมอ (ตอนนี้คือรหัสของ TMDB)
   const [movie, setMovie] = useState(null);
   const [status, setStatus] = useState('loading');
