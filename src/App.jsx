@@ -19,6 +19,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminMovies from './pages/admin/AdminMovies';
 import AdminMovieForm from './pages/admin/AdminMovieForm';
 import AdminMembers from './pages/admin/AdminMembers';
+
+
 function App() {
   return (
     // AuthProvider ครอบทั้งแอป ทุกหน้าข้างในจึงเรียก useAuth() ได้
@@ -34,9 +36,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/me/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-            <Route path="/lab" element={<ApiLab />} />
-            <Route path="/about" element={<About />} />
-            <Route path="*" element={<NotFound />} />
             {/* หลังบ้าน: ครอบทั้งกิ่งด้วย RequireRole ครั้งเดียว หน้าลูกทุกหน้าได้รับการป้องกันหมด */}
             <Route path="/admin" element={<RequireRole role="admin"><AdminLayout /></RequireRole>}>
               <Route index element={<AdminDashboard />} />
@@ -45,6 +44,9 @@ function App() {
               <Route path="movies/:id" element={<AdminMovieForm />} />
               <Route path="members" element={<AdminMembers />} />
             </Route>
+            <Route path="/lab" element={<ApiLab />} />
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

@@ -26,6 +26,7 @@ test('โหลดสำเร็จ ต้องเห็นการ์ดค�
   expect(screen.getByRole('button', { name: 'Thriller' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Animation' })).toBeInTheDocument();
 });
+
 test('พิมพ์ค้นหา ต้องกรองในเครื่องโดยไม่เรียก backend ซ้ำ', async () => {
   const user = userEvent.setup();
   getMovies.mockResolvedValue(FAKE_MOVIES);
@@ -38,6 +39,7 @@ test('พิมพ์ค้นหา ต้องกรองในเครื�
   expect(screen.getByText('Your Name')).toBeInTheDocument();
   expect(getMovies).toHaveBeenCalledTimes(1);          // ยังเรียกแค่ตอนโหลดครั้งแรก
 });
+
 test('backend ล่ม ต้องเห็นข้อความ error และปุ่มลองใหม่ที่โหลดอีกครั้งได้', async () => {
   const user = userEvent.setup();
   getMovies
@@ -53,6 +55,7 @@ test('backend ล่ม ต้องเห็นข้อความ error แ�
   expect(await screen.findByText('Parasite')).toBeInTheDocument();
   expect(getMovies).toHaveBeenCalledTimes(2);
 });
+
 test('กดเลือกแนว ต้องเหลือเฉพาะแนวนั้น', async () => {
   const user = userEvent.setup();
   getMovies.mockResolvedValue(FAKE_MOVIES);

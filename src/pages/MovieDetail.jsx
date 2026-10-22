@@ -3,20 +3,20 @@ import { useParams, Link } from 'react-router-dom';
 import ReviewForm from '../components/ReviewForm';
 import ReviewList from '../components/ReviewList';
 import MovieActions from '../components/MovieActions';
-//import { getMovie } from '../api/tmdb';
-import { useAuth } from '../auth/AuthContext';
-// TODO ขั้นที่ 3: import { getReviews, postReview } from '../api/backend';
 import { getMovie } from '../api/backend';
-import { getReviews } from '../api/backend';
+import { useAuth } from '../auth/AuthContext';
+import { getReviews, postReview } from '../api/backend';
+// TODO ขั้นที่ 3: import { getReviews, postReview } from '../api/backend';
+
 function MovieDetail() {
-  const {}
   const { id } = useParams();                       // ได้เป็น string เสมอ (ตอนนี้คือรหัสของ TMDB)
   const [movie, setMovie] = useState(null);
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState(null);
   const [reviews, setReviews] = useState([]);       // รีวิวจาก backend ของเรา (ไม่ใช่ TMDB)
   const { isLoggedIn } = useAuth();                 // TODO ขั้นที่ 3: ดึง token และ member มาด้วย
-  const {member,toekn} = useAuth();
+  const { token, member } = useAuth();
+
   useEffect(() => {
     let ignore = false;
     async function load() {
@@ -35,15 +35,21 @@ function MovieDetail() {
   // TODO ขั้นที่ 3 (ก): เปลี่ยน effect นี้ให้โหลดรีวิวจริงจาก backend
   //   getReviews(id) ได้ { items } แล้ว setReviews(items)  dependency คือ [id] เหมือนตัวบน
   //   (แยกจาก effect ของ TMDB เพราะคนละ server พังคนละแบบ ไม่ควรให้รีวิวล่มแล้วหน้าทั้งหน้าพัง)
-  useEffect(() => {
-    setReviews([]);                                // ชั่วคราว: ยังไม่มีรีวิว
+useEffect(() => {
+    let ignore = false;
+    getReviews(id)
+      .then(data => { if (!ignore) setReviews(data.items); })
+      .catch(() => { if (!ignore) setReviews([]); });   // backend ล่มก็แค่ไม่มีรีวิว หน้าหนังยังดูได้
+    return () => { ignore = true; };
   }, [id]);
 
-  // TODO ขั้นที่ 3 (ข): ส่งรีวิวจริง
+  // ส่งรีวิวจริง: ReviewForm เรียกฟังก์ชันนี้ตอนกดส่ง ถ้า throw ฟอร์มจะโชว์ข้อความ error เอง
   async function handleReviewSubmit(text) {
-    //   const saved = await postReview(id, text, token);
-    //   แล้วเติมรีวิวใหม่เข้าไปหน้าสุดของ reviews ด้วย spread (ไม่ push) ใช้ชื่อจาก member ใน useAuth()
-    throw new Error('ยังไม่ได้ต่อ API ส่งรีวิว (ขั้นที่ 3)');
+    const saved = await postReview(id, text, token);          // 201 ได้ { id, text, createdAt }
+    setReviews([
+      { ...saved, member: { id: member.id, displayName: member.displayName }, score: null },
+      ...reviews,                                              // ต่อหน้ารายการเดิม
+    ]);
   }
 
   if (status === 'loading') {

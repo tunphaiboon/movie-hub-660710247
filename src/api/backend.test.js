@@ -13,6 +13,7 @@ beforeEach(() => {
   // แทน fetch ของเบราว์เซอร์ด้วยฟังก์ชันปลอมที่เราควบคุมคำตอบได้ และจดทุกครั้งที่ถูกเรียก
   global.fetch = jest.fn();
 });
+
 test('GET ธรรมดา: ไม่มี body ไม่มี Authorization และคืน object ที่แปลงแล้ว', async () => {
   fetch.mockResolvedValue(fakeResponse(200, { items: [{ id: 1 }] }));
 
@@ -25,6 +26,7 @@ test('GET ธรรมดา: ไม่มี body ไม่มี Authorization
   expect(options.body).toBeUndefined();
   expect(options.headers.Authorization).toBeUndefined();
 });
+
 test('มี token ต้องแนบ Authorization แบบ Bearer และ body ต้องเป็นข้อความ JSON', async () => {
   fetch.mockResolvedValue(fakeResponse(201, { id: 7 }));
 
@@ -37,6 +39,7 @@ test('มี token ต้องแนบ Authorization แบบ Bearer แล�
   expect(options.headers['Content-Type']).toBe('application/json');
   expect(options.body).toBe(JSON.stringify({ text: 'สนุกมาก ฉากแอ็กชันดี' }));
 });
+
 test('204 คืน null โดยไม่เรียก res.json()', async () => {
   const res = fakeResponse(204, null);
   res.json = jest.fn();                                   // ถ้าถูกเรียกแปลว่าโค้ดผิด

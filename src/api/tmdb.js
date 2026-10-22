@@ -23,9 +23,8 @@ export async function getJSON(path, params = {}) {
   if (!res.ok) {
     throw new Error(`TMDB ตอบกลับ ${res.status}`);   // 401 key ผิด, 404 ไม่มีของ ฯลฯ
   }
-  return res.json();                                 // รอครั้งที่ 2: แปลงข้อความเป็น object
+  return res.json();
 }
-
 
 // แปลง JSON ของ TMDB ให้เป็นรูปร่างเดียวกับ data.js เพื่อให้ MovieCard ใช้ได้ทันที
 // genreMap คือตาราง { 28: 'แอ็คชั่น', 16: 'แอนิเมชัน', ... } เพราะรายการหนังให้มาแค่รหัสแนว (genre_ids)
@@ -41,7 +40,6 @@ export function toMovie(m, genreMap = {}) {
   //   detail            m.overview ถ้าว่างให้ใส่ข้อความแทน
   //   poster            IMG + m.poster_path ถ้าไม่มีให้เป็น null
   //return m;   // ชั่วคราว: ส่งกลับตามเดิม การ์ดจะขึ้นไม่ครบเพราะชื่อ field ไม่ตรง
-
   return {
     id: m.id,
     tmdbId: m.id,
@@ -53,7 +51,6 @@ export function toMovie(m, genreMap = {}) {
     detail: m.overview || 'ยังไม่มีเรื่องย่อภาษาไทย',
     poster: m.poster_path ? IMG + m.poster_path : null,
   };
-
 }
 
 // ตารางแปลงรหัสแนวหนังเป็นชื่อ (โหลดครั้งเดียวต่อการเรียก getNowPlaying)
